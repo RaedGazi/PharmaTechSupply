@@ -12,72 +12,72 @@ import java.util.Optional;
 @Service
 public class ProdService {
 
-    private final ProdRepository supplyRepository;
+    private final ProdRepository prodRepository;
 
-    public ProdService(ProdRepository supplyRepository) {
-        this.supplyRepository = supplyRepository;
+    public ProdService(ProdRepository prodRepository) {
+        this.prodRepository = prodRepository;
     }
 
     @Transactional
-    public Iterable<Product> findAllSupplies() {
-        return supplyRepository.findAll();
+    public Iterable<Product> findAllProducts() {
+        return prodRepository.findAll();
     }
 
-    public Product getSupplyById(Integer id) {
-        Optional<Product> optionalSupply = supplyRepository.findById(id);
+    public Product getProdById(Integer id) {
+        Optional<Product> optionalProd = prodRepository.findById(id);
 
-        if (optionalSupply.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Supply not found with id: " + id);
+        if (optionalProd.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Prod not found with id: " + id);
         }
-//        gets the supply out of the optional container and returns it to the controller
-        return optionalSupply.get();
+//        gets the prod out of the optional container and returns it to the controller
+        return optionalProd.get();
     }
 
-    public Product addSupply(Product supply) {
-        return supplyRepository.save(supply);
+    public Product addProd(Product prod) {
+        return prodRepository.save(prod);
     }
 
-    public Product updateSupply(Integer id, Product updates) {
-        Product supplyToUpdate = getSupplyById(id);
+    public Product updateProd(Integer id, Product updates) {
+        Product prodToUpdate = getProdById(id);
 
         if (updates.getURL() != null) {
-            supplyToUpdate.setURL(updates.getURL());
+            prodToUpdate.setURL(updates.getURL());
         }
 
         if (!updates.getName().isEmpty()) {
-            supplyToUpdate.setName(updates.getName());
+            prodToUpdate.setName(updates.getName());
         }
 
         if (updates.getDescription() != null) {
-            supplyToUpdate.setDescription(updates.getDescription());
+            prodToUpdate.setDescription(updates.getDescription());
         }
 
         if (updates.getPrice() != null) {
-            supplyToUpdate.setPrice(updates.getPrice());
+            prodToUpdate.setPrice(updates.getPrice());
         }
 
         if (updates.getQuantity() != null) {
-            supplyToUpdate.setQuantity(updates.getQuantity());
+            prodToUpdate.setQuantity(updates.getQuantity());
         }
 
-        return supplyRepository.save(supplyToUpdate);
+        return prodRepository.save(prodToUpdate);
     }
 
-    public HashMap<String, Object> deleteSupply(Integer id) {
+    public HashMap<String, Object> deleteProd(Integer id) {
         HashMap<String, Object> responseMap = new HashMap<>();
 
-        Optional<Product> optionalSupply = supplyRepository.findById(id);
+        Optional<Product> optionalProd = prodRepository.findById(id);
 
-        if (optionalSupply.isEmpty()) {
-//            if the supply does not exist, this is what will be returned
+        if (optionalProd.isEmpty()) {
+//            if the prod does not exist, this is what will be returned
             responseMap.put("wasDeleted", false);
-            responseMap.put("supplyInfo", null);
-            responseMap.put("Message", "Supply not found with id: " + id);
+            responseMap.put("prodInfo", null);
+            responseMap.put("Message", "Prod not found with id: " + id);
             return responseMap;
         }
-        supplyRepository.deleteById(id);
+        prodRepository.deleteById(id);
         responseMap.put("wasDeleted", true);
-        responseMap.put("supplyInfo", optionalSupply.get());
+        responseMap.put("prodInfo", optionalProd.get());
 
         return responseMap;
     }
